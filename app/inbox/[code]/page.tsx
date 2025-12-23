@@ -3,20 +3,17 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { motion, AnimatePresence } from 'framer-motion'
 import { formatDate } from '@/lib/utils'
 import { 
   Trash2, 
   RefreshCcw, 
-  Share2, 
+  Copy,
   Inbox, 
   AlertCircle, 
-  Clock, 
-  Globe, 
-  Smartphone, 
-  ChevronLeft,
   Check,
-  Copy
+  ChevronLeft,
+  Globe,
+  Smartphone
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -98,7 +95,7 @@ export default function InboxPage() {
   }
   
   const deleteMessage = async (id: string) => {
-    if (confirm('Permanently delete this secret?')) {
+    if (confirm('Delete this message?')) {
       const { error } = await supabase
         .from('messages')
         .delete()
@@ -118,159 +115,150 @@ export default function InboxPage() {
   
   if (loading && messages.length === 0) {
     return (
-      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-          <p className="text-slate-400 font-medium italic">Unlocking your inbox...</p>
-        </div>
+      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
   
   if (!validCode) {
     return (
-      <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center p-4">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-12 max-w-md w-full text-center"
-        >
-          <div className="w-20 h-20 bg-red-500/20 text-red-400 rounded-3xl flex items-center justify-center mx-auto mb-8">
-            <AlertCircle size={40} />
+      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-3xl font-bold mb-4 italic">Invalid Access</h1>
-          <p className="text-slate-400 mb-8 leading-relaxed">
-            This inbox link is invalid or has expired. You'll need to create a new one to receive messages.
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Invalid Access</h1>
+          <p className="text-gray-500 mb-8">
+            This inbox link is invalid or has expired
           </p>
           <Link
             href="/"
-            className="inline-block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold transition-all"
+            className="inline-block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
           >
             Create New Link
           </Link>
-        </motion.div>
+        </div>
       </div>
     )
   }
   
   return (
-    <div className="min-h-screen bg-[#060b18] text-white selection:bg-purple-500/30 pb-20">
-      {/* Header Bar */}
-      <div className="sticky top-0 z-50 bg-[#060b18]/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
+    <div className="min-h-screen bg-[#f5f5f5]">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/" className="p-2 hover:bg-white/5 rounded-full transition-colors">
-              <ChevronLeft size={24} />
+            <Link href="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <ChevronLeft size={20} className="text-gray-600" />
             </Link>
             <div>
-              <h1 className="text-xl font-black italic tracking-tight">INBOX</h1>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">@{username}</p>
+              <h1 className="text-lg font-bold text-gray-900">Inbox</h1>
+              <p className="text-xs text-gray-500">@{username}</p>
             </div>
           </div>
           <button 
             onClick={verifyAndLoadMessages}
-            className="p-3 hover:bg-white/5 rounded-2xl transition-all text-slate-400 hover:text-white"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <RefreshCcw size={20} className={loading ? 'animate-spin' : ''} />
+            <RefreshCcw size={20} className={`text-gray-600 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Share Section */}
-        <div className="bg-gradient-to-r from-purple-600/10 to-pink-600/10 border border-white/10 rounded-[2rem] p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h2 className="text-2xl font-bold mb-2 italic">Ready for more?</h2>
-            <p className="text-slate-400">Share your link and wait for the secrets to roll in.</p>
-          </div>
-          <div className="flex gap-2 w-full md:w-auto">
-            <div className="bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm font-mono text-purple-300 flex-1 md:w-64 overflow-hidden text-ellipsis whitespace-nowrap flex items-center">
-              {shareLink}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 mb-1">Share Your Link</h2>
+              <p className="text-sm text-gray-600">Get more anonymous messages</p>
             </div>
-            <button
-              onClick={copyShareLink}
-              className="p-3 bg-white text-black rounded-2xl hover:bg-slate-200 transition-all"
-            >
-              {copied ? <Check size={20} /> : <Copy size={20} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Message Listing */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between px-2">
-            <h3 className="text-lg font-bold italic text-slate-400">
-              {messages.length} {messages.length === 1 ? 'Secret' : 'Secrets'} Received
-            </h3>
-          </div>
-
-          <AnimatePresence mode="popLayout">
-            {messages.length === 0 ? (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white/5 border border-white/10 border-dashed rounded-[2.5rem] py-24 text-center"
+            <div className="flex gap-2 w-full md:w-auto">
+              <input
+                type="text"
+                value={shareLink}
+                readOnly
+                className="flex-1 md:w-64 px-4 py-2 bg-white border border-purple-200 rounded-xl text-sm font-mono text-purple-700 focus:outline-none"
+              />
+              <button
+                onClick={copyShareLink}
+                className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all flex items-center gap-2"
               >
-                <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-600">
-                  <Inbox size={40} />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 italic">Silence is golden.</h3>
-                <p className="text-slate-500 max-w-xs mx-auto">But receiving messages is better. Share your link to start!</p>
-              </motion.div>
-            ) : (
-              messages.map((msg, index) => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className={`group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-[2rem] p-8 transition-all hover:bg-white/10 ${
-                    !msg.is_read ? 'ring-2 ring-purple-500/20' : ''
-                  }`}
-                  onClick={() => !msg.is_read && markAsRead(msg.id)}
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="flex flex-wrap gap-2">
-                      {!msg.is_read && (
-                        <span className="px-3 py-1 bg-purple-500 text-white text-[10px] font-black uppercase tracking-tighter rounded-full">
-                          NEW
-                        </span>
-                      )}
-                      <span className="px-3 py-1 bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-tighter rounded-full flex items-center gap-1.5">
-                        <Clock size={10} /> {formatDate(msg.created_at)}
-                      </span>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deleteMessage(msg.id)
-                      }}
-                      className="p-2 text-slate-600 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  
-                  <p className="text-xl leading-relaxed mb-8 whitespace-pre-wrap font-medium">
-                    {msg.message_text}
-                  </p>
-                  
-                  <div className="pt-6 border-t border-white/5 flex flex-wrap gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-600">
-                    <div className="flex items-center gap-1.5">
-                      <Smartphone size={12} /> {msg.sender_device}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Globe size={12} /> {msg.sender_browser}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Globe size={12} /> {msg.sender_country}
-                    </div>
-                  </div>
-                </motion.div>
-              ))
-            )}
-          </AnimatePresence>
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Messages */}
+        <div className="mb-4">
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+            {messages.length} {messages.length === 1 ? 'Message' : 'Messages'}
+          </h3>
+        </div>
+
+        {messages.length === 0 ? (
+          <div className="bg-white border border-gray-200 rounded-2xl py-20 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Inbox size={32} className="text-gray-400" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No messages yet</h3>
+            <p className="text-gray-500 max-w-xs mx-auto">
+              Share your link to start receiving anonymous messages
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-sm transition-all ${
+                  !msg.is_read ? 'ring-2 ring-purple-200' : ''
+                }`}
+                onClick={() => !msg.is_read && markAsRead(msg.id)}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex flex-wrap gap-2">
+                    {!msg.is_read && (
+                      <span className="px-2 py-1 bg-purple-600 text-white text-xs font-bold uppercase rounded-full">
+                        NEW
+                      </span>
+                    )}
+                    <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
+                      {formatDate(msg.created_at)}
+                    </span>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      deleteMessage(msg.id)
+                    }}
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                
+                <p className="text-gray-900 text-lg leading-relaxed mb-4 whitespace-pre-wrap">
+                  {msg.message_text}
+                </p>
+                
+                <div className="pt-4 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <Smartphone size={12} /> {msg.sender_device}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Globe size={12} /> {msg.sender_browser}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Globe size={12} /> {msg.sender_country}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
