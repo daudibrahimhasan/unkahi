@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { formatDate } from '@/lib/utils'
@@ -13,8 +13,6 @@ import {
   Search,
   Mail,
   User,
-  Globe,
-  Smartphone,
   Link as LinkIcon
 } from 'lucide-react'
 import Link from 'next/link'
@@ -56,11 +54,7 @@ export default function InboxPage() {
   
   const supabase = createClient()
   
-  useEffect(() => {
-    verifyAndLoadMessages()
-  }, [])
-  
-  const verifyAndLoadMessages = async () => {
+  const verifyAndLoadMessages = useCallback(async () => {
     setLoading(true)
     try {
       const { data: accessData } = await supabase
@@ -94,7 +88,11 @@ export default function InboxPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [code, supabase])
+
+  useEffect(() => {
+    verifyAndLoadMessages()
+  }, [verifyAndLoadMessages])
   
   const markAsRead = async (id: string) => {
     await supabase
@@ -272,21 +270,9 @@ export default function InboxPage() {
                   </button>
                 </div>
                 
-                <p className="text-[#262626] text-base leading-relaxed mb-4 whitespace-pre-wrap">
+                <p className="text-[#262626] text-base leading-relaxed whitespace-pre-wrap">
                   {msg.message_text}
                 </p>
-                
-                <div className="pt-3 border-t border-[#f0f0f0] flex flex-wrap gap-4 text-xs text-[#8e8e8e]">
-                  <div className="flex items-center gap-1">
-                    <Smartphone size={12} /> {msg.sender_device}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Globe size={12} /> {msg.sender_browser}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Globe size={12} /> {msg.sender_country}
-                  </div>
-                </div>
               </div>
             ))}
           </div>

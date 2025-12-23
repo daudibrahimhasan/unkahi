@@ -38,7 +38,7 @@ export function MessageForm({ message, setMessage, loading, onSubmit }: MessageF
       <button
         type="submit"
         disabled={loading || !message.trim()}
-        className="w-full group py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-black rounded-[1.25rem] hover:shadow-[0_0_40px_-10px_rgba(168,85,247,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xl flex items-center justify-center gap-3 italic"
+        className="w-full group py-5 bg-linear-to-r from-purple-600 to-pink-600 text-white font-black rounded-[1.25rem] hover:shadow-[0_0_40px_-10px_rgba(168,85,247,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xl flex items-center justify-center gap-3 italic"
       >
         {loading ? (
           <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />

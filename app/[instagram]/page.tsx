@@ -25,24 +25,19 @@ export default function SendMessagePage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [userExists, setUserExists] = useState<boolean | null>(null)
-  const [instagramUrl, setInstagramUrl] = useState('')
   
   useEffect(() => {
-    checkUser()
-  }, [])
-  
-  const checkUser = async () => {
-    try {
-      const res = await fetch(`/api/user/check?username=${instagram}`)
-      const data = await res.json()
-      setUserExists(data.exists)
-      if (data.exists) {
-        setInstagramUrl(data.instagram_url)
+    const checkUser = async () => {
+      try {
+        const res = await fetch(`/api/user/check?username=${instagram}`)
+        const data = await res.json()
+        setUserExists(data.exists)
+      } catch {
+        setUserExists(false)
       }
-    } catch (err) {
-      setUserExists(false)
     }
-  }
+    checkUser()
+  }, [instagram])
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -96,7 +91,7 @@ export default function SendMessagePage() {
             </div>
             <h1 className="text-xl font-bold text-[#262626] mb-2">User Not Found</h1>
             <p className="text-[#8e8e8e] mb-6">
-              @{instagram} hasn't created their unkahi link yet
+              @{instagram} hasn&apos;t created their unkahi link yet
             </p>
             <Link
               href="/"

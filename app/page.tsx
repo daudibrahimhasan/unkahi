@@ -57,7 +57,7 @@ export default function HomePage() {
       } else {
         setError('Failed to create account. Please try again.')
       }
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
