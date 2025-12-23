@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/client'
+import { createServerClient } from '@/lib/supabase/server'
 import { nanoid } from 'nanoid'
 
 export async function POST(request: NextRequest) {
   try {
     const { instagram_username } = await request.json()
     
-    const supabase = createClient()
+    const supabase = createServerClient()
     
     // Generate unique code
     const code = nanoid(16)

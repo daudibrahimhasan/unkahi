@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/client'
+import { createServerClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
     const { recipient_instagram, message, deviceInfo } = await request.json()
     
-    const supabase = createClient()
+    const supabase = createServerClient()
     
     // Check if recipient exists
-    const { data: user, error: userError } = await supabase
+    const { data: user } = await supabase
       .from('users')
       .select('id, message_count')
       .eq('instagram_username', recipient_instagram)
@@ -35,9 +35,9 @@ export async function POST(request: NextRequest) {
         recipient_instagram,
         message_text: message,
         sender_ip: ip,
-        sender_browser: deviceInfo.browser,
-        sender_device: deviceInfo.device,
-        sender_fingerprint: deviceInfo.fingerprint,
+        sender_browser: deviceInfo?.browser || 'unknown',
+        sender_device: deviceInfo?.device || 'unknown',
+        sender_fingerprint: deviceInfo?.fingerprint || 'unknown',
         sender_country: country
       })
       .select()

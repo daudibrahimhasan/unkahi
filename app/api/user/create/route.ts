@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/client'
+import { createServerClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
     const { instagram_username, instagram_url } = await request.json()
     
-    const supabase = createClient()
+    const supabase = createServerClient()
     
     // Check if user exists
     const { data: existing } = await supabase
