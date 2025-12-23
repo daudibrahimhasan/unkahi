@@ -1,21 +1,24 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { formatDate } from '@/lib/utils'
 import { 
   Trash2, 
   RefreshCcw, 
-  Copy,
   Inbox, 
   AlertCircle, 
-  Check,
-  ChevronLeft,
+  Home,
+  Search,
+  Mail,
+  User,
   Globe,
-  Smartphone
+  Smartphone,
+  Link as LinkIcon
 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface Message {
   id: string
@@ -30,7 +33,19 @@ interface Message {
 
 export default function InboxPage() {
   const params = useParams()
+  const router = useRouter()
   const code = params.code as string
+  
+  const handleInboxClick = () => {
+    const storedCode = localStorage.getItem('unkahi_code')
+    if (storedCode) {
+      router.push(`/inbox/${storedCode}`)
+    } else if (code) {
+      router.push(`/inbox/${code}`)
+    } else {
+      router.push('/')
+    }
+  }
   
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(true)
@@ -115,96 +130,113 @@ export default function InboxPage() {
   
   if (loading && messages.length === 0) {
     return (
-      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#f0f2f5] flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-[#BDA9DF] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
   
   if (!validCode) {
     return (
-      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-red-600" />
+      <div className="min-h-screen bg-[#f0f2f5] flex flex-col">
+        <header className="bg-white border-b border-[#dbdbdb] fixed w-full top-0 z-10">
+          <div className="max-w-[975px] mx-auto px-5 h-[60px] flex items-center">
+            <Link href="/" className="flex items-center gap-2 text-[#262626] no-underline">
+              <Image src="/logo.png" alt="unkahi" width={28} height={28} className="object-contain" />
+              <span className="text-[22px] font-extrabold tracking-tight">unkahi</span>
+            </Link>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Invalid Access</h1>
-          <p className="text-gray-500 mb-8">
-            This inbox link is invalid or has expired
-          </p>
-          <Link
-            href="/"
-            className="inline-block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
-          >
-            Create New Link
-          </Link>
-        </div>
+        </header>
+        
+        <main className="flex-1 flex items-center justify-center pt-[60px] px-4">
+          <div className="bg-white border border-[#dbdbdb] rounded-lg p-10 max-w-md w-full text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-red-500" />
+            </div>
+            <h1 className="text-xl font-bold text-[#262626] mb-2">Invalid Access</h1>
+            <p className="text-[#8e8e8e] mb-6">
+              This inbox link is invalid or has expired
+            </p>
+            <Link
+              href="/"
+              className="inline-block w-full py-3 bg-[#BDA9DF] text-white font-semibold rounded-lg hover:bg-[#a996c7] transition-colors"
+            >
+              Create New Link
+            </Link>
+          </div>
+        </main>
       </div>
     )
   }
   
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
+    <div className="min-h-screen bg-[#f0f2f5]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <ChevronLeft size={20} className="text-gray-600" />
+      <header className="bg-white border-b border-[#dbdbdb] fixed w-full top-0 z-10">
+        <div className="max-w-[975px] mx-auto px-5 h-[60px] flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-[#262626] no-underline">
+            <Image src="/logo.png" alt="unkahi" width={28} height={28} className="object-contain" />
+            <span className="text-[22px] font-extrabold tracking-tight">unkahi</span>
+          </Link>
+          
+          <nav className="flex items-center gap-6">
+            <Link href="/" className="text-[#8e8e8e]">
+              <Home size={24} />
             </Link>
-            <div>
-              <h1 className="text-lg font-bold text-gray-900">Inbox</h1>
-              <p className="text-xs text-gray-500">@{username}</p>
-            </div>
-          </div>
-          <button 
-            onClick={verifyAndLoadMessages}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <RefreshCcw size={20} className={`text-gray-600 ${loading ? 'animate-spin' : ''}`} />
-          </button>
+            <button className="text-[#8e8e8e]">
+              <Search size={24} />
+            </button>
+            <button onClick={handleInboxClick} className="text-[#262626] hover:text-[#9565e7]">
+              <Mail size={24} />
+            </button>
+            <button className="text-[#8e8e8e]">
+              <User size={24} />
+            </button>
+          </nav>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Share Section */}
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-6 mb-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">Share Your Link</h2>
-              <p className="text-sm text-gray-600">Get more anonymous messages</p>
-            </div>
-            <div className="flex gap-2 w-full md:w-auto">
-              <input
-                type="text"
-                value={shareLink}
-                readOnly
-                className="flex-1 md:w-64 px-4 py-2 bg-white border border-purple-200 rounded-xl text-sm font-mono text-purple-700 focus:outline-none"
-              />
-              <button
-                onClick={copyShareLink}
-                className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all flex items-center gap-2"
-              >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-              </button>
-            </div>
+      <div className="max-w-[800px] mx-auto pt-[80px] pb-10 px-4">
+        {/* Share Card */}
+        <div className="bg-white border border-[#dbdbdb] rounded-lg py-6 px-5 mb-6 text-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+          <h2 className="text-lg font-semibold text-[#262626] mb-3">Share Your Link</h2>
+          <p className="text-[#BDA9DF] font-semibold text-lg mb-4 break-all">
+            {shareLink.replace('http://', '').replace('https://', '')}
+          </p>
+          <div className="flex justify-center gap-3">
+            <button 
+              onClick={copyShareLink}
+              className="px-4 py-2 bg-[#8e8e8e] text-white text-sm font-semibold rounded-full hover:opacity-80 transition-opacity flex items-center gap-2"
+            >
+              <LinkIcon size={16} />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+            <button 
+              onClick={verifyAndLoadMessages}
+              className="px-4 py-2 bg-white border border-[#dbdbdb] text-[#262626] text-sm font-semibold rounded-full hover:bg-[#fafafa] transition-colors flex items-center gap-2"
+            >
+              <RefreshCcw size={16} className={loading ? 'animate-spin' : ''} />
+              Refresh
+            </button>
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+        {/* Messages Header */}
+        <div className="flex items-center justify-between mb-4 px-1">
+          <h3 className="text-sm font-semibold text-[#262626]">
             {messages.length} {messages.length === 1 ? 'Message' : 'Messages'}
           </h3>
+          <span className="text-xs text-[#8e8e8e]">@{username}</span>
         </div>
 
+        {/* Messages */}
         {messages.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-2xl py-20 text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Inbox size={32} className="text-gray-400" />
+          <div className="bg-white border border-[#dbdbdb] rounded-lg py-16 text-center">
+            <div className="w-16 h-16 bg-[#fafafa] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Inbox size={32} className="text-[#8e8e8e]" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No messages yet</h3>
-            <p className="text-gray-500 max-w-xs mx-auto">
+            <h3 className="text-lg font-semibold text-[#262626] mb-2">No messages yet</h3>
+            <p className="text-[#8e8e8e] text-sm">
               Share your link to start receiving anonymous messages
             </p>
           </div>
@@ -213,19 +245,19 @@ export default function InboxPage() {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-sm transition-all ${
-                  !msg.is_read ? 'ring-2 ring-purple-200' : ''
+                className={`bg-white border border-[#dbdbdb] rounded-lg p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${
+                  !msg.is_read ? 'border-l-4 border-l-[#BDA9DF]' : ''
                 }`}
                 onClick={() => !msg.is_read && markAsRead(msg.id)}
               >
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-3">
                   <div className="flex flex-wrap gap-2">
                     {!msg.is_read && (
-                      <span className="px-2 py-1 bg-purple-600 text-white text-xs font-bold uppercase rounded-full">
+                      <span className="px-2 py-1 bg-[#BDA9DF] text-white text-[10px] font-bold uppercase rounded">
                         NEW
                       </span>
                     )}
-                    <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
+                    <span className="px-2 py-1 bg-[#fafafa] text-[#8e8e8e] text-xs rounded">
                       {formatDate(msg.created_at)}
                     </span>
                   </div>
@@ -234,17 +266,17 @@ export default function InboxPage() {
                       e.stopPropagation()
                       deleteMessage(msg.id)
                     }}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                    className="p-2 text-[#8e8e8e] hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
                 
-                <p className="text-gray-900 text-lg leading-relaxed mb-4 whitespace-pre-wrap">
+                <p className="text-[#262626] text-base leading-relaxed mb-4 whitespace-pre-wrap">
                   {msg.message_text}
                 </p>
                 
-                <div className="pt-4 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-500">
+                <div className="pt-3 border-t border-[#f0f0f0] flex flex-wrap gap-4 text-xs text-[#8e8e8e]">
                   <div className="flex items-center gap-1">
                     <Smartphone size={12} /> {msg.sender_device}
                   </div>
@@ -260,6 +292,12 @@ export default function InboxPage() {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="py-5 text-center text-[#8e8e8e] text-xs">
+        <a href="#" className="text-[#8e8e8e] no-underline mx-3 hover:text-[#262626]">Imprint</a>
+        <a href="#" className="text-[#8e8e8e] no-underline mx-3 hover:text-[#262626]">Privacy Settings</a>
+      </footer>
     </div>
   )
 }
