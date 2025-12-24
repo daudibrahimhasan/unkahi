@@ -9,10 +9,10 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "unkahi | Anonymous Messaging Platform",
+  title: "unkahii | Anonymous Messaging Platform",
   description: "Receive anonymous messages from your Instagram followers without any signup.",
   openGraph: {
-    title: "unkahi | Anonymous Messaging",
+    title: "unkahii | Anonymous Messaging",
     description: "Send me anonymous messages!",
     type: "website",
   },

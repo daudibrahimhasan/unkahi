@@ -173,8 +173,8 @@ export default function InboxPage() {
       <header className="bg-white border-b border-[#dbdbdb] fixed w-full top-0 z-10">
         <div className="max-w-[975px] mx-auto px-5 h-[60px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-[#262626] no-underline">
-            <Image src="/logo.png" alt="unkahi" width={28} height={28} className="object-contain" />
-            <span className="text-[22px] font-extrabold tracking-tight">unkahi</span>
+            <Image src="/logo.png" alt="unkahii" width={28} height={28} className="object-contain" />
+            <span className="text-[22px] font-extrabold tracking-tight">unkahii</span>
           </Link>
           
           <nav className="flex items-center gap-6">
@@ -198,9 +198,20 @@ export default function InboxPage() {
         {/* Share Card */}
         <div className="bg-white border border-[#dbdbdb] rounded-lg py-6 px-5 mb-6 text-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
           <h2 className="text-lg font-semibold text-[#262626] mb-3">Share Your Link</h2>
-          <p className="text-[#BDA9DF] font-semibold text-lg mb-4 break-all">
-            {shareLink.replace('http://', '').replace('https://', '')}
-          </p>
+          <div 
+            onClick={copyShareLink}
+            className="cursor-pointer relative group inline-block mb-4"
+          >
+            <span className="text-[#BDA9DF] font-semibold text-lg break-all hover:underline">
+              {shareLink.replace('http://', '').replace('https://', '')}
+            </span>
+            {copied && (
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#262626] text-white text-xs py-1.5 px-3 rounded-lg shadow-lg animate-in fade-in zoom-in duration-200">
+                Copied!
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#262626] rotate-45"></div>
+              </div>
+            )}
+          </div>
           <div className="flex justify-center gap-3">
             <button 
               onClick={copyShareLink}

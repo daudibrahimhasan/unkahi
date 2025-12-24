@@ -52,8 +52,8 @@ function SuccessContent() {
       <header className="bg-white border-b border-[#dbdbdb] fixed w-full top-0 z-10">
         <div className="max-w-[975px] mx-auto px-5 h-[60px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-[#262626] no-underline">
-            <Image src="/logo.png" alt="unkahi" width={28} height={28} className="object-contain" />
-            <span className="text-[22px] font-extrabold tracking-tight">unkahi</span>
+            <Image src="/logo.png" alt="unkahii" width={28} height={28} className="object-contain" />
+            <span className="text-[22px] font-extrabold tracking-tight">unkahii</span>
           </Link>
           
           <nav className="flex items-center gap-6">
@@ -77,13 +77,20 @@ function SuccessContent() {
       <main className="flex-1 flex flex-col items-center pt-[100px] pb-10 px-4">
         <div className="bg-white border border-[#dbdbdb] rounded-lg py-10 px-5 w-full max-w-[600px] text-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
           <h2 className="text-lg font-semibold text-[#262626] mb-4">Share Your Link</h2>
-          <a 
-            href={shareLink}
-            target="_blank"
-            className="text-[22px] font-semibold text-[#BDA9DF] no-underline block mb-8 break-all hover:underline"
+          <div 
+            onClick={copyToClipboard}
+            className="cursor-pointer relative group inline-block mb-8"
           >
-            {shareLink.replace('http://', '').replace('https://', '')}
-          </a>
+            <span className="text-[22px] font-semibold text-[#BDA9DF] break-all hover:underline">
+              {shareLink.replace('http://', '').replace('https://', '')}
+            </span>
+            {copied && (
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#262626] text-white text-xs py-1.5 px-3 rounded-lg shadow-lg animate-in fade-in zoom-in duration-200">
+                Copied!
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#262626] rotate-45"></div>
+              </div>
+            )}
+          </div>
           
           {/* Action Buttons */}
           <div className="flex justify-center items-center gap-3 flex-wrap">

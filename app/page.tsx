@@ -71,7 +71,7 @@ export default function HomePage() {
         <div className="max-w-[975px] mx-auto px-5 h-[60px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-[#262626] no-underline">
             <Image src="/logo.png" alt="unkahi" width={28} height={28} className="object-contain" />
-            <span className="text-[22px] font-extrabold tracking-tight">unkahi</span>
+            <span className="text-[22px] font-extrabold tracking-tight">unkahii</span>
           </Link>
           
           <nav className="flex items-center gap-6">
